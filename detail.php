@@ -1,9 +1,13 @@
 <?php
-// detail.php: Halaman Detail Event
+// ===============================
+// DETAIL.PHP: Halaman Detail Event (FINAL MENGGUNAKAN KOMPONEN)
+// ===============================
 
+// PENTING: Memuat KONEKSI dan FUNGSI di awal agar tersedia untuk logika
+// database dan untuk fungsi set_active di header.php
 require_once 'koneksi.php'; 
 require_once 'functions.php'; 
-require_once 'data_static.php'; // Data tambahan dari array lama
+require_once 'data_static.php'; 
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id']) || $_GET['id'] <= 0) {
     header('Location: index.php');
@@ -42,34 +46,13 @@ $is_lomba = $kategori_event === 'lomba';
 $is_workshop = $kategori_event === 'workshop'; 
 $is_seminar = $kategori_event === 'seminar'; 
 $is_gamud = strpos($event_full['judul'], 'GAMUD') !== false; 
+
+// Atur Judul Halaman sebelum memanggil header
+$page_title = 'Detail Event | ' . $event_full['judul']; 
+
+// --- MEMANGGIL HEADER (HTML pembuka dan Navbar) ---
+require_once 'komponen/header.php'; 
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Event | <?php echo $event_full['judul']; ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-    <div class="logo">
-      <img src="assets/logo.png" alt="Logo FindEvent">
-      <span>FindEvent</span>
-    </div>
-
-    <button id="dark-mode-toggle" title="Toggle Dark Mode">🌙</button>
-
-    <nav>
-      <a href="index.php" class="<?php echo is_active('index.php', null, $id, $koneksi) ? 'active' : ''; ?>">Beranda</a>
-      <a href="kategori.php?tipe=lomba" class="<?php echo is_active('kategori.php', 'lomba', $id, $koneksi) ? 'active' : ''; ?>">Lomba</a>
-      <a href="kategori.php?tipe=seminar" class="<?php echo is_active('kategori.php', 'seminar', $id, $koneksi) ? 'active' : ''; ?>">Seminar</a>
-      <a href="kategori.php?tipe=workshop" class="<?php echo is_active('kategori.php', 'workshop', $id, $koneksi) ? 'active' : ''; ?>">Workshop</a>
-      <a href="tentang.php" class="<?php echo is_active('tentang.php', null, $id, $koneksi) ? 'active' : ''; ?>">Tentang</a>
-    </nav>
-</header>
 
 <section class="event-detail">
     <div class="detail-wrapper">
@@ -179,7 +162,7 @@ $is_gamud = strpos($event_full['judul'], 'GAMUD') !== false;
                       else:
                           if (isset($event_full['htm'])) {
                               foreach ($event_full['htm'] as $htm): ?>
-                                <tr><td><strong><?php echo $htm['lomba']; ?></strong></td><td>Rp <?php echo $htm['gel1']; ?></td><td>Rp <?php echo $htm['gel2']; ?></td></tr>
+                              <tr><td><strong><?php echo $htm['lomba']; ?></strong></td><td>Rp <?php echo $htm['gel1']; ?></td><td>Rp <?php echo $htm['gel2']; ?></td></tr>
                               <?php endforeach;
                           } 
                       endif;
@@ -253,30 +236,7 @@ $is_gamud = strpos($event_full['judul'], 'GAMUD') !== false;
       </div>
     </div>
 </section>
-
-<footer>
-    <div class="footer-container">
-      <div class="footer-left">
-        <img src="assets/logo.png" alt="FindEvent Logo">
-        <h2>FindEvent</h2>
-        <p>Temukan berbagai event kampus di Universitas Lampung seperti seminar, lomba, dan workshop mahasiswa.</p>
-      </div>
-
-      <div class="footer-right">
-        <h3>Hubungi Kami</h3>
-        <div class="social-icons">
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968830.png" alt="X"></a>
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/3670/3670051.png" alt="WhatsApp"></a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; 2025 FindEvent. Semua hak dilindungi.</p>
-    </div>
-</footer>
-<script src="script.js"></script> 
-</body>
-</html>
+<?php
+// --- MEMANGGIL FOOTER (Menutup tag body dan html) ---
+require_once 'komponen/footer.php';
+?>

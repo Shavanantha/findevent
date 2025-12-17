@@ -1,19 +1,25 @@
 <?php
 // ===============================
-//  INDEX.PHP — Halaman Beranda
+// INDEX.PHP — Halaman Beranda (FINAL MENGGUNAKAN KOMPONEN)
 // ===============================
 
-require_once 'koneksi.php';
-require_once 'functions.php';
+// Hapus require_once 'koneksi.php'; dan 'functions.php'; dari sini!
+// Keduanya sekarang harus ada di dalam file komponen/header.php atau dipanggil sebelum header.
 
-// --------------------------------------
-// Ambil data event dari database
-// --------------------------------------
+// --- 1. Ambil data event dari database ---
 $events_from_db = [];
 $error_message = "";
+$page_title = 'FindEvent – Portal Event Universitas Lampung'; // Atur Judul Halaman
 
-$query = "SELECT id, judul, tanggal, waktu, lokasi, gambar, kategori, deadline 
-          FROM event ORDER BY id DESC";
+// PANGGIL KONEKSI dan FUNGSI MANUAL DI SINI SEBAGAI SAFETY NET
+require_once 'koneksi.php'; 
+require_once 'functions.php'; 
+
+// --- MEMANGGIL HEADER (HTML pembuka, Navigasi, dll.) ---
+require_once 'komponen/header.php'; 
+
+// Lanjutkan dengan logika PHP yang menggunakan $koneksi dan fungsi
+$query = "SELECT id, judul, tanggal, waktu, lokasi, gambar, kategori, deadline FROM event ORDER BY id DESC";
 $result = $koneksi->query($query);
 
 if ($result && $result->num_rows > 0) {
@@ -23,42 +29,7 @@ if ($result && $result->num_rows > 0) {
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FindEvent – Portal Event Universitas Lampung</title>
 
-    <!-- FONT & CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<!-- =============================== -->
-<!-- HEADER / NAVBAR -->
-<!-- =============================== -->
-<header>
-    <div class="logo">
-        <img src="assets/logo.png" alt="Logo FindEvent">
-        <span>FindEvent</span>
-    </div>
-
-    <button id="dark-mode-toggle" title="Mode Gelap / Terang">🌙</button>
-
-    <nav>
-      <a href="index.php" class="<?php echo set_active('index.php'); ?>">Beranda</a>
-      <a href="kategori.php?tipe=lomba" class="<?php echo set_active('kategori.php', 'lomba'); ?>">Lomba</a>
-      <a href="kategori.php?tipe=seminar" class="<?php echo set_active('kategori.php', 'seminar'); ?>">Seminar</a>
-      <a href="kategori.php?tipe=workshop" class="<?php echo set_active('kategori.php', 'workshop'); ?>">Workshop</a>
-      <a href="tentang.php" class="<?php echo set_active('tentang.php'); ?>">Tentang</a>
-    </nav>
-</header>
-
-<!-- =============================== -->
-<!-- HERO -->
-<!-- =============================== -->
 <section class="hero">
     <div class="hero-content">
         <h2>Temukan Berbagai Event di Universitas Lampung!</h2>
@@ -66,9 +37,6 @@ if ($result && $result->num_rows > 0) {
     </div>
 </section>
 
-<!-- =============================== -->
-<!-- EVENT LIST -->
-<!-- =============================== -->
 <main class="container">
 
     <h2 class="section-title">✨ Rekomendasi Event</h2>
@@ -86,12 +54,10 @@ if ($result && $result->num_rows > 0) {
 
         <div class="event-card" data-kategori="<?php echo $event['kategori']; ?>">
 
-            <!-- STATUS EVENT -->
             <span class="event-status <?php echo $status['class']; ?>">
                 <?php echo $status['text']; ?>
             </span>
 
-            <!-- GAMBAR -->
             <img src="<?php echo $img; ?>" alt="<?php echo $event['judul']; ?>">
 
             <div class="event-info">
@@ -115,33 +81,7 @@ if ($result && $result->num_rows > 0) {
     </div>
 </main>
 
-<!-- =============================== -->
-<!-- FOOTER -->
-<!-- =============================== -->
-<footer>
-    <div class="footer-container">
-        <div class="footer-left">
-            <img src="assets/logo.png" alt="Logo FindEvent">
-            <h2>FindEvent</h2>
-            <p>Temukan berbagai event kampus seperti seminar, lomba, dan workshop di Universitas Lampung.</p>
-        </div>
-
-        <div class="footer-right">
-            <h3>Hubungi Kami</h3>
-            <div class="social-icons">
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968830.png" alt="X"></a>
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/3670/3670051.png" alt="WhatsApp"></a>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <p>&copy; 2025 FindEvent. Semua hak dilindungi.</p>
-    </div>
-</footer>
-
-<script src="script.js"></script>
-</body>
-</html>
+<?php
+// --- MEMANGGIL FOOTER (Menutup tag body dan html) ---
+require_once 'komponen/footer.php';
+?>

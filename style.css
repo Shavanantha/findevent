@@ -75,6 +75,23 @@ header {
     z-index: 100;
 }
 
+/* --- CSS Tambahan untuk Logo yang Bisa Diklik --- */
+
+.logo-link {
+    text-decoration: none; 
+    color: inherit; /* Memastikan warna teks 'FindEvent' tetap sama dengan warna header/navbar */
+    cursor: pointer; /* Menandakan ini bisa diklik */
+    
+    /* Penting: Agar area klik mencakup seluruh logo dan tulisan */
+    display: flex; 
+    align-items: center; 
+}
+
+/* Memastikan di dark mode, warnanya tetap mengikuti header */
+body.dark-mode .logo-link {
+    color: #ffffff; 
+}
+
 /* LOGO */
 .logo {
     display: flex;
@@ -124,23 +141,42 @@ nav a.active {
     margin-left: 20px;
     transition: color 0.3s;
 }
+/* --- DI FILE style.css --- */
 
-/* Penyesuaian Header agar tombol tampil di sebelah kanan navigasi */
+/* KONTROL UTAMA HEADER */
+/* --- DI FILE style.css --- */
+
 header {
-    /* Sudah ada: display: flex; justify-content: space-between; align-items: center; */
-    /* Kita tambahkan agar navigasi dan tombol Dark Mode sejajar */
+    display: flex;
+    /* Menyebar Logo (Kiri) dan Nav/Tombol (Kanan) */
+    justify-content: space-between; 
+    align-items: center;
+    padding: 15px 5%; 
+    /* Pastikan tinggi header cukup agar layout tidak pecah */
+    min-height: 50px; 
 }
 
-/* Menggabungkan nav dan dark mode toggle ke sisi kanan header */
 header nav {
-    /* Atur nav untuk menempati sisa ruang */
+    /* Hapus SEMUA margin yang berlawanan (misal: margin-right: auto;) */
+    /* INI KUNCI UTAMA: margin-left: auto; MENDORONG SEMUA KE KANAN */
+    margin-left: auto; 
+    
+    /* Tambahkan jarak dari tombol dark mode */
+    margin-right: 20px; 
+    
+    /* Agar link di dalam nav rapi */
     display: flex;
     align-items: center;
 }
 
+#dark-mode-toggle {
+    /* Pastikan tidak ada margin-left: auto; di sini */
+    flex-shrink: 0; /* Mencegah tombol mengecil */
+}
+
 /* --- PERBAIKAN DARK MODE: HERO CONTENT --- */
 body.dark-mode .hero-content {
-    /* Ganti latar belakang putih permanen ke warna card gelap */
+	/* Ganti latar belakang putih permanen ke warna card gelap */
     background: var(--bg-card) !important;
     /* Ganti shadow menjadi terang */
     box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15); 

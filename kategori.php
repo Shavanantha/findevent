@@ -1,7 +1,11 @@
 <?php
-// kategori.php: Halaman untuk menampilkan event yang difilter
+// ===============================
+// kategori.php: Halaman Event Kategori (FINAL MENGGUNAKAN KOMPONEN)
+// ===============================
 
-require_once 'koneksi.php'; // Menggunakan require_once untuk keandalan koneksi
+// PENTING: Memuat KONEKSI dan FUNGSI di awal agar tersedia untuk logika database
+// dan untuk fungsi is_active di header.php
+require_once 'koneksi.php'; 
 require_once 'functions.php';
 
 // --- LOGIKA PENGAMBILAN DATA DARI DATABASE ---
@@ -15,11 +19,13 @@ if (empty($tipe_url) || !in_array($tipe_url, ['lomba', 'seminar', 'workshop'])) 
     exit;
 }
 
+// Catatan: Fungsi ini seharusnya ada di functions.php, tapi jika belum, ini opsinya:
 function getTitleCase($string) {
     return ucwords(str_replace('_', ' ', $string));
 }
 
 $judul_kategori = getTitleCase($tipe_url) . ' Kampus';
+$page_title = 'Kategori ' . $judul_kategori . ' – FindEvent'; // Atur Judul Halaman
 
 // Bersihkan input untuk keamanan database
 $tipe_url_bersih = $koneksi->real_escape_string($tipe_url);
@@ -41,32 +47,10 @@ if ($result && $result->num_rows > 0) {
     $filtered_events = $result->fetch_all(MYSQLI_ASSOC);
 } 
 // --- AKHIR LOGIKA DATABASE ---
+
+// --- MEMANGGIL HEADER (HTML pembuka dan Navbar) ---
+require_once 'komponen/header.php'; 
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori <?php echo $judul_kategori; ?> – FindEvent</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-    <div class="logo">
-      <img src="assets/logo.png" alt="Logo FindEvent">
-      <span>FindEvent</span>
-    </div>
-
-    <nav>
-      <a href="index.php" class="<?php echo is_active('index.php', null, 0, $koneksi) ? 'active' : ''; ?>">Beranda</a>
-      <a href="kategori.php?tipe=lomba" class="<?php echo is_active('kategori.php', 'lomba', 0, $koneksi) ? 'active' : ''; ?>">Lomba</a>
-      <a href="kategori.php?tipe=seminar" class="<?php echo is_active('kategori.php', 'seminar', 0, $koneksi) ? 'active' : ''; ?>">Seminar</a>
-      <a href="kategori.php?tipe=workshop" class="<?php echo is_active('kategori.php', 'workshop', 0, $koneksi) ? 'active' : ''; ?>">Workshop</a>
-      <a href="tentang.php" class="<?php echo is_active('tentang.php', null, 0, $koneksi) ? 'active' : ''; ?>">Tentang</a>
-    </nav>
-</header>
 
 <main class="container">
     <h2 class="section-title">✨ Kategori: <?php echo $judul_kategori; ?></h2>
@@ -80,12 +64,13 @@ if ($result && $result->num_rows > 0) {
                 
                 // Panggil function status untuk Badge Timer
                 $status = get_event_status($event['deadline']);
+                $img = (!empty($event['gambar'])) ? $event['gambar'] : "assets/default.jpg"; // Tambah penanganan default image
             ?>
                 <div class="event-card" data-kategori="<?php echo $event['kategori']; ?>">
                     <span class="event-status <?php echo $status['class']; ?>">
                         <?php echo $status['text']; ?>
                     </span>
-                    <img src="/<?php echo $event['gambar']; ?>" alt="<?php echo $event['judul']; ?>">
+                    <img src="<?php echo $img; ?>" alt="<?php echo $event['judul']; ?>"> 
                     <div class="event-info">
                         <h3><?php echo $event['judul']; ?></h3>
                         <div class="event-meta">
@@ -101,29 +86,7 @@ if ($result && $result->num_rows > 0) {
     <?php endif; ?>
 </main>
 
-<footer>
-    <div class="footer-container">
-      <div class="footer-left">
-        <img src="assets/logo.png" alt="Logo FindEvent">
-        <h2>FindEvent</h2>
-        <p>Temukan berbagai event kampus di Universitas Lampung seperti seminar, lomba, dan workshop mahasiswa.</p>
-      </div>
-
-      <div class="footer-right">
-        <h3>Hubungi Kami</h3>
-        <div class="social-icons">
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968830.png" alt="X"></a>
-          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/3670/3670051.png" alt="WhatsApp"></a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; 2025 FindEvent. Semua hak dilindungi.</p>
-    </div>
-</footer>
-<script src="script.js"></script> 
-</body>
-</html>
+<?php
+// --- MEMANGGIL FOOTER (Menutup tag body dan html) ---
+require_once 'komponen/footer.php';
+?>
